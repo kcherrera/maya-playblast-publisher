@@ -1,0 +1,27 @@
+// maya runs this file automatically upon start
+
+global proc pipeline_buildMenu()
+{
+    // no window in batch mode, stop here
+    if (`about -batch`)
+        return;
+    
+    // main maya window
+    global string $gMainWindow;
+
+    // if menu exists, delete so there's no duplicates
+    if (`menu -exists pipelineMenu`)
+        deleteUI -menu pipelineMenu;
+    
+    // add pipeline menu to main menu bar
+    menu -label "Pipeline" -parent $gMainWindow -tearOff true pipelineMenu;
+
+    // add one item to menu
+    menuItem -label "Playblast Publisher..."
+        -annotation "Make a versioned playblast for review"
+        -sourceType "python"
+        -command "from playblast_publisher import ui; ui.show()";
+}
+
+// waits until maya has loaded
+evalDeferred "pipeline_buildMenu";
